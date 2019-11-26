@@ -97,21 +97,43 @@ class AuthenticationPage extends Component {
     }
 
     render () {
+        let emailError = false;
+        let credentialError = false;
+        let emailInvalidFeedback = "Please enter a valid email";
+        if (this.props.authError == 'emailError') {
+            emailError = true;
+            emailInvalidFeedback = "This email already exist";
+        } else if (this.props.authError == 'credentialError') {
+            credentialError = true;
+        }
+
         let nameValidation;
-        if (this.state.form.name.touched) {
-            nameValidation = this.state.form.name.valid ? "is-valid" : "is-invalid";
-        }
         let emailValidation;
-        if (this.state.form.email.touched) {
-            emailValidation = this.state.form.email.valid ? "is-valid" : "is-invalid";
-        }
         let passValidation;
-        if (this.state.form.password.touched) {
-            passValidation = this.state.form.password.valid ? "is-valid" : "is-invalid";
-        }
         let overallValidation = false;
-        if (this.state.form.name.valid && this.state.form.email.valid && this.state.form.password.valid) {
-            overallValidation = true;
+
+        if (this.state.isSignup) {
+            if (this.state.form.name.touched) {
+                nameValidation = this.state.form.name.valid ? "is-valid" : "is-invalid";
+            }
+            if (this.state.form.email.touched) {
+                emailValidation = this.state.form.email.valid && !emailError ? "is-valid" : "is-invalid";
+            }
+            if (this.state.form.password.touched) {
+                passValidation = this.state.form.password.valid ? "is-valid" : "is-invalid";
+            }
+            if (this.state.form.name.valid && this.state.form.email.valid && this.state.form.password.valid) {
+                overallValidation = true;
+            }
+        } else {
+            nameValidation = null;
+            emailValidation = null;
+            passValidation = null;
+            if (credentialError) {
+                emailValidation = "is-invalid";
+                passValidation = "is-invalid";
+                emailInvalidFeedback = "Invalid Credential";
+            }
         }
 
         let nameField = (
@@ -121,6 +143,9 @@ class AuthenticationPage extends Component {
                 </Form.Label>
                 <Col xs={8}>
                     <Form.Control className={nameValidation} type="text" placeholder="Name" value={this.state.form.name.value} onChange={(event) => this.inputChangedHandler(event, "name")}/>
+                    <div className="invalid-feedback">
+                        This field is required
+                    </div>
                 </Col>
             </Form.Group>
         )
@@ -136,6 +161,9 @@ class AuthenticationPage extends Component {
                         </Form.Label>
                         <Col xs={8}>
                             <Form.Control className={emailValidation} type="email" placeholder="Email" name="email" value={this.state.form.email.value} onChange={(event) => this.inputChangedHandler(event, "email")}/>
+                            <div className="invalid-feedback">
+                                {emailInvalidFeedback}
+                            </div>
                         </Col>
                     </Form.Group>
 
@@ -145,12 +173,15 @@ class AuthenticationPage extends Component {
                         </Form.Label>
                         <Col xs={8}>
                             <Form.Control className={passValidation} type="password" placeholder="Password" name="password" value={this.state.form.password.value} onChange={(event) => this.inputChangedHandler(event, "password")}/>
+                            <div className="invalid-feedback">
+                                {credentialError ? "Invalid Credential" : "Password should be at least 6 characters"}
+                            </div>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} className={classes.SubmitBtn}>
                         <Col xs={12} className={classes.ButtonContainer}>
-                            <Button disabled={!overallValidation} type="submit">{this.state.isSignup ? "SIGN UP" : "SIGN IN"}</Button>
+                            <Button disabled={!overallValidation && this.state.isSignup} type="submit">{this.state.isSignup ? "SIGN UP" : "SIGN IN"}</Button>
                         </Col>
                     </Form.Group>
                 </Form>
@@ -163,6 +194,12 @@ class AuthenticationPage extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        authError: state.auth.error
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         onSignup: (name, email, password) => dispatch(actions.signup(name, email, password)),
@@ -170,4 +207,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(AuthenticationPage);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthenticationPage);

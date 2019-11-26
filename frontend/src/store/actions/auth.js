@@ -51,15 +51,15 @@ export const signup = (name, email, password) => {
         let url = 'http://localhost:5000/api/users/signup'
         axios.post(url, authData)
             .then(response => {
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                localStorage.setItem('token', response.data.idToken);
+                const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+                localStorage.setItem('token', response.data.token);
                 localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId', response.data.localId);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTimeout(response.data.expiresIn));
+                localStorage.setItem('userId', response.data.userId);
+                dispatch(authSuccess(response.data.token, response.data.userId));
+                dispatch(checkAuthTimeout(3600));
             })
             .catch(err => {
-                dispatch(authFail(err.response.data.error));
+                dispatch(authFail(err.response.data.message));
             })
     }
 }
@@ -74,15 +74,15 @@ export const login = (email, password) => {
         let url = 'http://localhost:5000/api/users/login';
         axios.post(url, authData)
             .then(response => {
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                localStorage.setItem('token', response.data.idToken);
+                const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+                localStorage.setItem('token', response.data.token);
                 localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId', response.data.localId);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTimeout(response.data.expiresIn));
+                localStorage.setItem('userId', response.data.userId);
+                dispatch(authSuccess(response.data.token, response.data.userId));
+                dispatch(checkAuthTimeout(3600));
             })
             .catch(err => {
-                dispatch(authFail(err.response.data.error));
+                dispatch(authFail(err.response.data.message));
             })
     }
 }

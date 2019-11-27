@@ -9,6 +9,12 @@
     margin-top: 10px;
 }
 
+.TableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
 .Table {
     margin-bottom: 30px;
 }

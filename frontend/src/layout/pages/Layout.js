@@ -25,6 +25,7 @@ class Layout extends Component {
                 <Navbar bg="light" expand="true" className={classes.NavContentInLg}>
                     <Navbar.Brand href="/notes">MyNotes</Navbar.Brand>
                     <div className={classes.Nav}>
+                        <h5 className={classes.Title}>Welcome, {this.props.userName}</h5>
                         <Link to="/addNote"><button className="btn btn-primary">Add</button></Link>
                         <button onClick={this.logoutHandler} className="btn btn-outline-danger">Logout</button>
                     </div>
@@ -34,10 +35,16 @@ class Layout extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        userName: state.auth.userName
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         onLogout: () => dispatch(actions.logout())
     }
 }
 
-export default connect(null, mapDispatchToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

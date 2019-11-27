@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import classes from './NotesList.module.css';
@@ -29,7 +30,10 @@ class NotesList extends Component {
     render () {
         return (
             <div className={classes.Container}>
-                <h3 className={classes.Title}>My Notes</h3>
+                <div className={classes.TableHeader}>
+                    <h3 className={classes.Title}>Notes</h3>
+                    <Link>History Notes</Link>
+                </div>
                 <Table className={classes.Table} variant="dark" hover>
                     <thead>
                         <tr>
@@ -52,7 +56,9 @@ class NotesList extends Component {
                         })}
                     </tbody>
                 </Table>
-                <h3 className={classes.Title}>Shared Notes</h3>
+                <div className={classes.TableHeader}>
+                    <h3 className={classes.Title}>Shared Notes</h3>
+                </div>
                 <Table className={classes.Table} variant="dark" hover>
                     <thead>
                         <tr>

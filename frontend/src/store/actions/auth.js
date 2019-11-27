@@ -8,11 +8,12 @@ export const authStart = () => {
     }
 }
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId, userName) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         idToken: token,
-        userId: userId
+        userId: userId,
+        userName: userName
     }
 }
 
@@ -55,7 +56,8 @@ export const signup = (name, email, password) => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', response.data.userId);
-                dispatch(authSuccess(response.data.token, response.data.userId));
+                localStorage.setItem('userName', response.data.userName);
+                dispatch(authSuccess(response.data.token, response.data.userId, response.data.userName));
                 dispatch(checkAuthTimeout(3600));
             })
             .catch(err => {
@@ -78,7 +80,8 @@ export const login = (email, password) => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', response.data.userId);
-                dispatch(authSuccess(response.data.token, response.data.userId));
+                localStorage.setItem('userName', response.data.userName);
+                dispatch(authSuccess(response.data.token, response.data.userId, response.data.userName));
                 dispatch(checkAuthTimeout(3600));
             })
             .catch(err => {
@@ -98,7 +101,8 @@ export const authCheckState = () => {
                 dispatch(logout());
             } else {
                 const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
+                const userName = localStorage.getItem('userName');
+                dispatch(authSuccess(token, userId, userName));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000))
             }
         }

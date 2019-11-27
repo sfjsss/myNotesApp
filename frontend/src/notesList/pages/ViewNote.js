@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import classes from './ViewNote.module.css';
@@ -30,7 +31,10 @@ class ViewNote extends Component {
     render () {
         return (
             <div className={classes.Container}>
-                <h3 className={classes.Title}>Details</h3>
+                <div className={classes.TableHeader}>
+                    <h3 className={classes.Title}>Details</h3>
+                    <Link to="/notes">Back to notes</Link>
+                </div>
                 <Table className={classes.Table} variant="dark">
                     <tbody>
                         <tr>

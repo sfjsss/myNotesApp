@@ -6,6 +6,7 @@ import axios from 'axios';
 import classes from './ViewNote.module.css';
 
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 class ViewNote extends Component {
     state = {
@@ -55,6 +56,10 @@ class ViewNote extends Component {
                         </tr>
                     </tbody>
                 </Table>
+                <div className={classes.ButtonContainer}>
+                    <Button variant="outline-danger">DELETE</Button>
+                    <Link to={'/notes/edit/' + this.props.match.params.nid}><Button>EDIT</Button></Link>
+                </div>
             </div>
         )
     }

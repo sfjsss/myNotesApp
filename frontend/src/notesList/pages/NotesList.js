@@ -32,7 +32,7 @@ class NotesList extends Component {
             <div className={classes.Container}>
                 <div className={classes.TableHeader}>
                     <h3 className={classes.Title}>Notes</h3>
-                    <Link>History Notes</Link>
+                    <Link to="/">History Notes</Link>
                 </div>
                 <Table className={classes.Table} variant="dark" hover>
                     <thead>
@@ -46,11 +46,11 @@ class NotesList extends Component {
                     <tbody>
                         {this.state.myNotes.map(note => {
                             return (
-                                <tr onClick={() => this.viewNoteHandler(note._id)} key={note._id}>
-                                    <td>{note.title}</td>
-                                    <td>{note.createdAt}</td>
+                                <tr key={note._id}>
+                                    <td onClick={() => this.viewNoteHandler(note._id)}>{note.title}</td>
+                                    <td onClick={() => this.viewNoteHandler(note._id)}>{note.createdAt}</td>
                                     <td className={classes.LgTableField}>{note.description}</td>
-                                    <td className={classes.LgTableField}>edit | delete</td>
+                                    <td className={classes.LgTableField}><Link to={"/notes/edit/" + note._id}>edit</Link> | delete</td>
                                 </tr>
                             )
                         })}

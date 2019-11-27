@@ -9,6 +9,7 @@ import Layout from './layout/pages/Layout';
 import NotesList from './notesList/pages/NotesList';
 import AddNote from './addNote/pages/AddNote';
 import ViewNote from './notesList/pages/ViewNote';
+import EditNote from './editNote/pages/EditNote';
 
 class App extends Component {
     componentDidMount () {
@@ -23,6 +24,7 @@ class App extends Component {
                 <React.Fragment>
                     <Layout />
                     <Switch>
+                        <Route path="/notes/edit/:nid" component={EditNote} />
                         <Route path="/notes/:nid" component={ViewNote} />
                         <Route path="/notes" component={NotesList} />
                         <Route path="/addNote" component={AddNote} />

@@ -18,7 +18,7 @@ class AuthenticationPage extends Component {
                 valid: false,
                 touched: false,
                 validation: {
-                    required: true,
+                    required: true
                 }
             },
             email: {
@@ -100,10 +100,10 @@ class AuthenticationPage extends Component {
         let emailError = false;
         let credentialError = false;
         let emailInvalidFeedback = "Please enter a valid email";
-        if (this.props.authError == 'emailError') {
+        if (this.props.authError === 'emailError') {
             emailError = true;
             emailInvalidFeedback = "This email already exist";
-        } else if (this.props.authError == 'credentialError') {
+        } else if (this.props.authError === 'credentialError') {
             credentialError = true;
         }
 
@@ -149,6 +149,7 @@ class AuthenticationPage extends Component {
                 </Col>
             </Form.Group>
         )
+
         return (
             <div className={classes.Container}>
                 <h3 className={classes.Title}>Welcome to myNotes</h3>
@@ -196,7 +197,7 @@ class AuthenticationPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        authError: state.auth.error
+        authError: state.auth.error,
     }
 }
 

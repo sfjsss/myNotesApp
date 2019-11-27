@@ -1,35 +1,24 @@
-/* * {
-    border: 1px solid red;
-} */
-
 .Container {
     padding: 30px;
-    margin: 100px auto;
+    margin: 0 auto;
 }
 
 .Title {
     text-align: center;
     margin-bottom: 30px;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .ButtonContainer{
     display: flex;
-    justify-content: center;
-}
-
-.Container Button {
-    width: 100px;
-}
-
-.SubmitBtn {
-    margin-top: 40px;
+    justify-content: space-between;
 }
 
 @media (min-width: 768px) {
     .Container {
-        width: 500px;
+        width: 700px;
         border: 1px solid rgba(128, 128, 128, 0.404);
         border-radius: 10px;
+        margin-top: 100px;
     }
 } 

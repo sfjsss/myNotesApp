@@ -15,6 +15,14 @@ const createNote = async (req, res, next) => {
 
     const { title, description, creator } = req.body;
 
+    if (creator !== req.userData.userId) {
+        const error = new HttpError(
+            'You are not the creator',
+            401
+        )
+        return next(error);
+    }
+
     const createdNote = new Note({
         title,
         description,
@@ -82,6 +90,14 @@ const getNoteById = async (req, res, next) => {
 
 const getNotesByUserId = async (req, res, next) => {
     const userId = req.params.uid;
+
+    if (userId !== req.userData.userId) {
+        const error = new HttpError(
+            'You are not the creator',
+            401
+        )
+        return next(error);
+    }
 
     let userWithNotes;
     try {

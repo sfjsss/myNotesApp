@@ -1,0 +1,31 @@
+.Title {
+    margin-bottom: 0;
+}
+
+.NavContentInMobile {
+    padding: 10px;
+}
+
+.NavContentInLg {
+    padding: 10px;
+    display: none;
+}
+
+.Nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Nav button {
+    margin-left: 20px;
+}
+
+@media (min-width: 768px) {
+    .NavContentInMobile {
+        display: none;
+    }
+
+    .NavContentInLg {
+        display: flex;
+    }
+}

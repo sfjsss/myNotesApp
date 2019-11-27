@@ -7,6 +7,8 @@ import * as actions from './store/actions/index';
 import AuthenticationPage from './auth/pages/AuthenticationPage';
 import Layout from './layout/pages/Layout';
 import NotesList from './notesList/pages/NotesList';
+import AddNote from './addNote/pages/AddNote';
+import ViewNote from './notesList/pages/ViewNote';
 
 class App extends Component {
     componentDidMount () {
@@ -14,21 +16,26 @@ class App extends Component {
     }
 
     render() {
-        let content = (
-            <Switch>
-                <Route path="/auth" component={AuthenticationPage} />
-                <Redirect to="/auth" />
-            </Switch>
-        )
+        let content;
 
         if (this.props.isAuthenticated) {
             content = (
-                <Layout>
+                <React.Fragment>
+                    <Layout />
                     <Switch>
+                        <Route path="/notes/:nid" component={ViewNote} />
                         <Route path="/notes" component={NotesList} />
+                        <Route path="/addNote" component={AddNote} />
                         <Redirect to="/notes" />
                     </Switch>
-                </Layout>
+                </React.Fragment>
+            )
+        } else {
+            content = (
+                <Switch>
+                    <Route path="/auth" component={AuthenticationPage} />
+                    <Redirect to="/auth" />
+                </Switch>
             )
         }
         return (

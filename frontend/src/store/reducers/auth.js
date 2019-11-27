@@ -6,8 +6,7 @@ const initialState = {
     error: {
         email: null,
         credential: null
-    },
-    loading: false,
+    }
 }
 
 const reducer = (state = initialState, action) => {

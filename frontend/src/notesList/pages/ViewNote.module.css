@@ -1,0 +1,14 @@
+.Container {
+    padding: 30px;
+    margin: 0 auto;
+}
+
+.Table {
+    margin-bottom: 30px;
+}
+
+.Title {
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}

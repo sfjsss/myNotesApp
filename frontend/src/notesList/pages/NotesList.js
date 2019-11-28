@@ -22,6 +22,7 @@ class NotesList extends Component {
     updateNotes = () => {
         axios.get('http://localhost:5000/api/notes/user/' + this.props.userId + '?auth=' + this.props.token)
             .then(response => {
+                console.log(response.data);
                 let updatedMyNotes = [];
                 let updatedDeletedNotes = [];
                 response.data.notes.forEach(note => {
@@ -90,7 +91,7 @@ class NotesList extends Component {
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.createdAt}</td>
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.updatedAt}</td>
                             <td className={classes.LgTableField}>{note.description}</td>
-                            <td><Link to={"/notes/edit/" + note._id}>edit</Link> | <span onClick={() => this.deleteHandler(note._id)} className={classes.DeleteLink}>delete</span></td>
+                            <td><Link to={"/notes/edit/" + note._id}>edit</Link> | <Link to={{pathname: '/notes/' + note._id, hash: '#shareForm'}}>share</Link> | <span onClick={() => this.deleteHandler(note._id)} className={classes.DeleteLink}>delete</span></td>
                         </tr>
                     )
                 })}

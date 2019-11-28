@@ -100,6 +100,7 @@ class AuthenticationPage extends Component {
         let emailError = false;
         let credentialError = false;
         let emailInvalidFeedback = "Please enter a valid email";
+        let passwordInvalidFeedback = "Password should be at least 6 characters";
         if (this.props.authError === 'emailError') {
             emailError = true;
             emailInvalidFeedback = "This email already exist";
@@ -133,6 +134,7 @@ class AuthenticationPage extends Component {
                 emailValidation = "is-invalid";
                 passValidation = "is-invalid";
                 emailInvalidFeedback = "Invalid Credential";
+                passwordInvalidFeedback = "Invalid Credential";
             }
         }
 
@@ -175,7 +177,7 @@ class AuthenticationPage extends Component {
                         <Col xs={8}>
                             <Form.Control className={passValidation} type="password" placeholder="Password" name="password" value={this.state.form.password.value} onChange={(event) => this.inputChangedHandler(event, "password")}/>
                             <div className="invalid-feedback">
-                                {credentialError ? "Invalid Credential" : "Password should be at least 6 characters"}
+                                {passwordInvalidFeedback}
                             </div>
                         </Col>
                     </Form.Group>

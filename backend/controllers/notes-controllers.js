@@ -69,7 +69,7 @@ const getNoteById = async (req, res, next) => {
 
     let note;
     try {
-        note = await Note.findById(noteId);
+        note = await Note.findById(noteId).populate('sharedUsers');
     } catch (err) {
         const error = new HttpError(
             'Something went wrong, cannot locate the note.',
@@ -102,7 +102,7 @@ const getNotesByUserId = async (req, res, next) => {
 
     let userWithNotes;
     try {
-        userWithNotes = await User.findById(userId).populate('notes');
+        userWithNotes = await User.findById(userId).populate('notes').populate('sharedNotes');
     } catch (err) {
         const error = new HttpError(
             'something went wrong',
@@ -117,7 +117,7 @@ const getNotesByUserId = async (req, res, next) => {
         )
     }
 
-    res.json({notes: userWithNotes.notes.map(note => note.toObject())});
+    res.json({notes: userWithNotes.notes.map(note => note.toObject()), sharedNotes: userWithNotes.sharedNotes.map(sharedNote => sharedNote.toObject())});
 }
 
 const updateNote = async (req, res, next) => {
@@ -156,6 +156,83 @@ const updateNote = async (req, res, next) => {
     }
 
     res.status(200).json({note: note.toObject()});
+}
+
+const shareNote = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(
+            new HttpError('Invalid input', 422)
+        );
+    }
+    
+    const noteId = req.params.nid;
+
+    let note;
+    try {
+        note = await Note.findById(noteId);
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    if (!note) {
+        const error = new HttpError(
+            'could not find the note',
+            404
+        )
+        return next(error);
+    }
+
+    if (note.creator.toString() !== req.userData.userId) {
+        const error = new HttpError(
+            'you are not the creator',
+            401
+        )
+        return next(error);
+    }
+
+    const { email } = req.body;
+
+    let existingUser;
+    try {
+        existingUser = await User.findOne({email: email});
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    if (!existingUser) {
+        const error = new HttpError(
+            'invalidEmail',
+            403
+        )
+        return next(error)
+    }
+
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        note.sharedUsers.push(existingUser);
+        await note.save({session: sess});
+        existingUser.sharedNotes.push(note);
+        await existingUser.save({session: sess});
+        await sess.commitTransaction();
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    res.status(200).json({message: 'note shared'});
 }
 
 const restoreNote = async (req, res, next) => {
@@ -295,3 +372,4 @@ exports.updateNote = updateNote;
 exports.deleteNote = deleteNote;
 exports.removeNote = removeNote;
 exports.restoreNote = restoreNote;
+exports.shareNote = shareNote;

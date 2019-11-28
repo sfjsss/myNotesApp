@@ -30,7 +30,8 @@ class AddNote extends Component {
         }
     }
 
-    submitHandler = () => {
+    submitHandler = (event) => {
+        event.preventDefault();
         const noteData = {
             title: this.state.form.title.value,
             description: this.state.form.description.value,
@@ -105,10 +106,13 @@ class AddNote extends Component {
                     <Form.Group>
                         <Form.Label>Description</Form.Label>
                         <Form.Control value={this.state.form.description.value} onChange={(event) => this.inputChangedHandler(event, "description")} className={descriptionValidation} as="textarea" rows="3" placeholder="description" />
+                        <div className="invalid-feedback">
+                            description should be at least 6 characters
+                        </div>
                     </Form.Group>
                     <div className={classes.ButtonContainer}>
                         <Button onClick={this.cancelHandler} variant="outline-danger">CANCEL</Button>
-                        <Button onClick={this.submitHandler} disabled={!overallValidation} variant="primary">SUBMIT</Button>
+                        <Button onClick={(event) => this.submitHandler(event)} disabled={!overallValidation} variant="primary">SUBMIT</Button>
                     </div>
                 </Form>
             </div>

@@ -9,6 +9,16 @@ const router = express.Router();
 router.use(checkAuth);
 
 router.post(
+    '/share/:nid',
+    [
+        check('email')
+            .normalizeEmail()
+            .isEmail()
+    ],
+    notesControllers.shareNote
+);
+
+router.post(
     '/',
     [
         check('title')

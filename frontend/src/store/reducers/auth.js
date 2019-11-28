@@ -23,7 +23,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 token: action.idToken,
                 userId: action.userId,
-                userName: action.userName
+                userName: action.userName,
+                error: {
+                    email: null,
+                    credential: null
+                }
             }
         case (actionTypes.AUTH_FAIL):
             return {

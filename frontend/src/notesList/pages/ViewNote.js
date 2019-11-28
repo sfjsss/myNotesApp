@@ -29,6 +29,16 @@ class ViewNote extends Component {
             })
     }
 
+    deleteHandler = () => {
+        axios.delete('http://localhost:5000/api/notes/remove/' + this.props.match.params.nid + '?auth=' + this.props.token)
+            .then(response => {
+                this.props.history.replace('/notes');
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
     render () {
         return (
             <div className={classes.Container}>
@@ -57,7 +67,7 @@ class ViewNote extends Component {
                     </tbody>
                 </Table>
                 <div className={classes.ButtonContainer}>
-                    <Button variant="outline-danger">DELETE</Button>
+                    <Button onClick={this.deleteHandler} variant="outline-danger">DELETE</Button>
                     <Link to={'/notes/edit/' + this.props.match.params.nid}><Button>EDIT</Button></Link>
                 </div>
             </div>

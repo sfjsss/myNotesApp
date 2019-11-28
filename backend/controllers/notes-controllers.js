@@ -26,7 +26,8 @@ const createNote = async (req, res, next) => {
     const createdNote = new Note({
         title,
         description,
-        creator
+        creator,
+        deleted: false
     });
 
     let user;
@@ -157,6 +158,96 @@ const updateNote = async (req, res, next) => {
     res.status(200).json({note: note.toObject()});
 }
 
+const restoreNote = async (req, res, next) => {
+    const noteId = req.params.nid;
+
+    let note;
+    try {
+        note = await Note.findById(noteId);
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    if (!note) {
+        const error = new HttpError(
+            'could not find the note',
+            404
+        )
+        return next(error);
+    }
+
+    if (note.creator.toString() !== req.userData.userId) {
+        const error = new HttpError(
+            'You are not the creator',
+            401
+        )
+        return next(error);
+    }
+
+    note.deleted = false;
+
+    try {
+        await note.save();
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    res.status(200).json({note: note.toObject()});
+}
+
+const removeNote = async (req, res, next) => {
+    const noteId = req.params.nid;
+
+    let note;
+    try {
+        note = await Note.findById(noteId);
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        );
+        return next(error);
+    }
+
+    if (!note) {
+        const error = new HttpError(
+            'could not find the note',
+            404
+        )
+        return next(error);
+    }
+
+    if (note.creator.toString() !== req.userData.userId) {
+        const error = new HttpError(
+            'You cannot remove the note',
+            401
+        )
+        return next(error);
+    }
+
+    note.deleted = true;
+
+    try {
+        await note.save();
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    res.status(200).json({note: note.toObject()});
+}
+
 const deleteNote = async (req, res, next) => {
     const noteId = req.params.nid;
 
@@ -202,3 +293,5 @@ exports.getNoteById = getNoteById;
 exports.getNotesByUserId = getNotesByUserId;
 exports.updateNote = updateNote;
 exports.deleteNote = deleteNote;
+exports.removeNote = removeNote;
+exports.restoreNote = restoreNote;

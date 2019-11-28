@@ -32,9 +32,13 @@ router.patch(
     notesControllers.updateNote
 )
 
+router.get('/restore/:nid', notesControllers.restoreNote);
+
 router.get('/:nid', notesControllers.getNoteById);
 
 router.get('/user/:uid', notesControllers.getNotesByUserId);
+
+router.delete('/remove/:nid', notesControllers.removeNote);
 
 router.delete('/:nid', notesControllers.deleteNote);
 

@@ -23,6 +23,19 @@
     display: none;
 }
 
+.DeleteLink {
+    color: salmon;
+    cursor: pointer;
+}
+
+.ScrollableTable {
+    position: relative;
+    height: 30vh;
+    overflow: auto;
+    display: block;
+    margin-bottom: 30px;
+}
+
 @media (min-width: 768px) {
     .LgTableField {
         display: table-cell;

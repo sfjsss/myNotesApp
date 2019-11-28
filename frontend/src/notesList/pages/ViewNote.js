@@ -7,6 +7,7 @@ import classes from './ViewNote.module.css';
 
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 class ViewNote extends Component {
     state = {
@@ -70,6 +71,11 @@ class ViewNote extends Component {
                     <Button onClick={this.deleteHandler} variant="outline-danger">DELETE</Button>
                     <Link to={'/notes/edit/' + this.props.match.params.nid}><Button>EDIT</Button></Link>
                 </div>
+                <Form>
+                    <Form.Group as={Row} controlId="shareEmail">
+                        
+                    </Form.Group>
+                </Form>
             </div>
         )
     }

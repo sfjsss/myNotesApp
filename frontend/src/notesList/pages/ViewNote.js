@@ -102,6 +102,19 @@ class ViewNote extends Component {
             })
     }
 
+    unshareHandler = (userId) => {
+        const shareData = {
+            userId: userId
+        }
+        axios.post('http://localhost:5000/api/notes/unshare/' + this.props.match.params.nid + '?auth=' + this.props.token, shareData)
+            .then(response => {
+                this.fetchNoteData();
+            })
+            .catch(error => {
+                console.log(error.response.data.message);
+            })
+    }
+
     render () {
         console.log(this.state.noteData);
         let emailValidation;
@@ -156,7 +169,7 @@ class ViewNote extends Component {
                         </Col>
                     </Form.Group>
                 </Form>
-                <Table variant="dark" hover>
+                <Table variant="dark">
                     <thead>
                         <tr>
                             <td>User</td>
@@ -170,7 +183,7 @@ class ViewNote extends Component {
                                 <tr key={user._id}>
                                     <td>{user.name}</td>
                                     <td>{user.email}</td>
-                                    <td>unshare</td>
+                                    <td><span onClick={() => this.unshareHandler(user._id)} className={classes.DeleteLink}>unshare</span></td>
                                 </tr>
                             )
                         })}

@@ -28,6 +28,11 @@
     cursor: pointer;
 }
 
+.DeleteLink:hover {
+    text-decoration: underline;
+    color: red;
+}
+
 .ScrollableTable {
     position: relative;
     height: 30vh;

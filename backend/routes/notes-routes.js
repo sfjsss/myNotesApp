@@ -19,6 +19,16 @@ router.post(
 );
 
 router.post(
+    '/unshare/:nid',
+    [
+        check('userId')
+            .not()
+            .isEmpty()
+    ],
+    notesControllers.unshareNote
+)
+
+router.post(
     '/',
     [
         check('title')

@@ -28,6 +28,16 @@
     display: none;
 }
 
+.DeleteLink {
+    color: salmon;
+    cursor: pointer;
+}
+
+.DeleteLink:hover {
+    text-decoration: underline;
+    color: red;
+}
+
 @media (min-width: 768px) {
     .LgElement {
         display: inline-block;

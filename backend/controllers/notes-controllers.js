@@ -235,6 +235,83 @@ const shareNote = async (req, res, next) => {
     res.status(200).json({message: 'note shared'});
 }
 
+const unshareNote = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(
+            new HttpError('Invalid input', 422)
+        )
+    }
+
+    const noteId = req.params.nid;
+
+    let note;
+    try {
+        note = await Note.findById(noteId);
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    if (!note) {
+        const error = new HttpError(
+            'could not find the note',
+            404
+        )
+        return next(error);
+    }
+
+    if (note.creator.toString() !== req.userData.userId) {
+        const error = new HttpError(
+            'you are not the creator',
+            401
+        )
+        return next(error);
+    }
+
+    const { userId } = req.body;
+
+    let existingUser;
+    try {
+        existingUser = await User.findById(userId);
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    if (!existingUser) {
+        const error = new HttpError(
+            'invalid userId',
+            403
+        )
+        return next(error)
+    }
+
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        note.sharedUsers.pull(existingUser);
+        await note.save({session: sess});
+        existingUser.sharedNotes.pull(note);
+        await existingUser.save({session: sess});
+        await sess.commitTransaction();
+    } catch (err) {
+        const error = new HttpError(
+            'something went wrong',
+            500
+        )
+        return next(error);
+    }
+
+    res.status(200).json({message: 'note unshared'});
+}
+
 const restoreNote = async (req, res, next) => {
     const noteId = req.params.nid;
 
@@ -373,3 +450,4 @@ exports.deleteNote = deleteNote;
 exports.removeNote = removeNote;
 exports.restoreNote = restoreNote;
 exports.shareNote = shareNote;
+exports.unshareNote = unshareNote;

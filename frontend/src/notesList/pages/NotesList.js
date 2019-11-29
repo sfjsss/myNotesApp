@@ -90,7 +90,7 @@ class NotesList extends Component {
                             <td onClick={() => this.viewNoteHandler(note._id)}>{note.title}</td>
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.createdAt}</td>
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.updatedAt}</td>
-                            <td className={classes.LgTableField}>{note.description}</td>
+                            <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.description}</td>
                             <td><Link to={"/notes/edit/" + note._id}>edit</Link> | <Link to={{pathname: '/notes/' + note._id, hash: '#shareForm'}}>share</Link> | <span onClick={() => this.deleteHandler(note._id)} className={classes.DeleteLink}>delete</span></td>
                         </tr>
                     )

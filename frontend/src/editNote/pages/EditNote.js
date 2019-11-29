@@ -12,7 +12,7 @@ class EditNote extends Component {
         form: {
             title: {
                 value: "",
-                valid: false,
+                valid: true,
                 touched: false,
                 validation: {
                     required: true
@@ -20,7 +20,7 @@ class EditNote extends Component {
             },
             description: {
                 value: "",
-                valid: false,
+                valid: true,
                 touched: false,
                 validation: {
                     required: true,

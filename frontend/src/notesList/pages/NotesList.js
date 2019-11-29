@@ -143,7 +143,7 @@ class NotesList extends Component {
                     </Table>
                 </div>
                 <div className={classes.TableHeader}>
-                    <h3 className={classes.Title}>Shared Notes</h3>
+                    <h3 className={classes.Title}>Notes Shared with You</h3>
                 </div>
                 <Table className={classes.Table} variant="dark" hover>
                     <thead>

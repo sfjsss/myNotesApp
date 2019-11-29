@@ -69,7 +69,7 @@ const getNoteById = async (req, res, next) => {
 
     let note;
     try {
-        note = await Note.findById(noteId).populate('sharedUsers');
+        note = await Note.findById(noteId).populate('sharedUsers').populate('creator');
     } catch (err) {
         const error = new HttpError(
             'Something went wrong, cannot locate the note.',

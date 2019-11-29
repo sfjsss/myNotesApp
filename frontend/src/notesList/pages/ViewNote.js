@@ -18,7 +18,10 @@ class ViewNote extends Component {
             description: null,
             createdAt: null,
             updatedAt: null,
-            sharedUsers: []
+            sharedUsers: [],
+            creator: {
+                name: null
+            }
         },
         shareEmail: {
             value: "",
@@ -29,7 +32,8 @@ class ViewNote extends Component {
                 isEmail: true
             }
         },
-        emailUniquenessError: false
+        emailUniquenessError: false,
+        isNoteCreator: false
     }
 
     checkValidity (value, rules) {
@@ -85,7 +89,21 @@ class ViewNote extends Component {
     fetchNoteData = () => {
         axios.get('http://localhost:5000/api/notes/' + this.props.match.params.nid + '?auth=' + this.props.token)
             .then(response => {
-                this.setState({noteData: response.data.note});
+                let updatedCreatorStatus = false;
+                if (response.data.note.creator._id === this.props.userId) {
+                    updatedCreatorStatus = true;
+                }
+                this.setState({
+                    noteData: {
+                        title: response.data.note.title,
+                        description: response.data.note.description,
+                        createdAt: response.data.note.createdAt,
+                        updatedAt: response.data.note.updatedAt,
+                        sharedUsers: response.data.note.sharedUsers,
+                        creator: response.data.note.creator
+                    },
+                    isNoteCreator: updatedCreatorStatus
+                });
             })
             .catch(error => {
                 console.log(error);
@@ -116,7 +134,6 @@ class ViewNote extends Component {
     }
 
     render () {
-        console.log(this.state.noteData);
         let emailValidation;
         let overallValidation = false;
         if (this.state.shareEmail.touched) {
@@ -124,6 +141,52 @@ class ViewNote extends Component {
         }
         if (this.state.shareEmail.valid) {
             overallValidation = true;
+        }
+
+        let sensitiveInfo = null;
+        if (this.state.isNoteCreator) {
+            sensitiveInfo = (
+                <React.Fragment>
+                    <div className={classes.ButtonContainer}>
+                        <Button onClick={this.deleteHandler} variant="outline-danger">DELETE</Button>
+                        <Link to={'/notes/edit/' + this.props.match.params.nid}><Button>EDIT</Button></Link>
+                    </div>
+                    <h3 className={classes.Title}>Share this note</h3>
+                    <Form id="shareForm">
+                        <Form.Group as={Row} controlId="shareEmail">
+                            <Col xs={8}>
+                                <Form.Control className={emailValidation} value={this.state.shareEmail.value} onChange={(event) => this.inputChangedHandler(event)} type="email" placeholder="Email to share" />
+                                <div className="invalid-feedback">
+                                    {this.state.emailUniquenessError ? 'No user was found with this email' : 'Please enter a valid email'}
+                                </div>
+                            </Col>
+                            <Col xs={4}>
+                                <Button onClick={(event) => this.shareHandler(event)} disabled={!overallValidation} type="submit">SHARE</Button>
+                            </Col>
+                        </Form.Group>
+                    </Form>
+                    <Table variant="dark">
+                        <thead>
+                            <tr>
+                                <td>User</td>
+                                <td>Email</td>
+                                <td>Actions</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.noteData.sharedUsers.map(user => {
+                                return (
+                                    <tr key={user._id}>
+                                        <td>{user.name}</td>
+                                        <td>{user.email}</td>
+                                        <td><span onClick={() => this.unshareHandler(user._id)} className={classes.DeleteLink}>unshare</span></td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </Table>
+                </React.Fragment>
+            )
         }
         return (
             <div className={classes.Container}>
@@ -142,6 +205,10 @@ class ViewNote extends Component {
                             <td>{this.state.noteData.description}</td>
                         </tr>
                         <tr>
+                            <td>Creator</td>
+                            <td>{this.state.noteData.creator.name}</td>
+                        </tr>
+                        <tr>
                             <td>Created Date</td>
                             <td>{this.state.noteData.createdAt}</td>
                         </tr>
@@ -151,44 +218,7 @@ class ViewNote extends Component {
                         </tr>
                     </tbody>
                 </Table>
-                <div className={classes.ButtonContainer}>
-                    <Button onClick={this.deleteHandler} variant="outline-danger">DELETE</Button>
-                    <Link to={'/notes/edit/' + this.props.match.params.nid}><Button>EDIT</Button></Link>
-                </div>
-                <h3 className={classes.Title}>Share this note</h3>
-                <Form id="shareForm">
-                    <Form.Group as={Row} controlId="shareEmail">
-                        <Col xs={8}>
-                            <Form.Control className={emailValidation} value={this.state.shareEmail.value} onChange={(event) => this.inputChangedHandler(event)} type="email" placeholder="Email to share" />
-                            <div className="invalid-feedback">
-                                {this.state.emailUniquenessError ? 'No user was found with this email' : 'Please enter a valid email'}
-                            </div>
-                        </Col>
-                        <Col xs={4}>
-                            <Button onClick={(event) => this.shareHandler(event)} disabled={!overallValidation} type="submit">SHARE</Button>
-                        </Col>
-                    </Form.Group>
-                </Form>
-                <Table variant="dark">
-                    <thead>
-                        <tr>
-                            <td>User</td>
-                            <td>Email</td>
-                            <td>Actions</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.noteData.sharedUsers.map(user => {
-                            return (
-                                <tr key={user._id}>
-                                    <td>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td><span onClick={() => this.unshareHandler(user._id)} className={classes.DeleteLink}>unshare</span></td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+                {sensitiveInfo}
             </div>
         )
     }
@@ -196,7 +226,8 @@ class ViewNote extends Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 }
 

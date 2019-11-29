@@ -22,7 +22,6 @@ class NotesList extends Component {
     updateNotes = () => {
         axios.get('http://localhost:5000/api/notes/user/' + this.props.userId + '?auth=' + this.props.token)
             .then(response => {
-                console.log(response.data);
                 let updatedMyNotes = [];
                 let updatedDeletedNotes = [];
                 response.data.notes.forEach(note => {
@@ -32,7 +31,10 @@ class NotesList extends Component {
                         updatedMyNotes.push(note);
                     }
                 })
-                this.setState({ myNotes: updatedMyNotes, deletedNotes: updatedDeletedNotes });
+                const updatedSharedNotes = response.data.sharedNotes.filter(sharedNote => {
+                    return sharedNote.deleted === false;
+                })
+                this.setState({ myNotes: updatedMyNotes, deletedNotes: updatedDeletedNotes, sharedNotes: updatedSharedNotes });
             })
             .catch(error => {
                 console.log(error);
@@ -81,6 +83,10 @@ class NotesList extends Component {
         })
     }
 
+    sharedNoteClickedHandler = (noteId) => {
+        this.props.history.push('/notes/' + noteId);
+    }
+
     render () {
         let tableToShow = (
             <React.Fragment>
@@ -88,9 +94,9 @@ class NotesList extends Component {
                     return (
                         <tr key={note._id}>
                             <td onClick={() => this.viewNoteHandler(note._id)}>{note.title}</td>
+                            <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.description}</td>
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.createdAt}</td>
                             <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.updatedAt}</td>
-                            <td className={classes.LgTableField} onClick={() => this.viewNoteHandler(note._id)}>{note.description}</td>
                             <td><Link to={"/notes/edit/" + note._id}>edit</Link> | <Link to={{pathname: '/notes/' + note._id, hash: '#shareForm'}}>share</Link> | <span onClick={() => this.deleteHandler(note._id)} className={classes.DeleteLink}>delete</span></td>
                         </tr>
                     )
@@ -104,9 +110,9 @@ class NotesList extends Component {
                         return (
                             <tr key={note._id}>
                                 <td>{note.title}</td>
+                                <td className={classes.LgTableField}>{note.description}</td>
                                 <td className={classes.LgTableField}>{note.createdAt}</td>
                                 <td className={classes.LgTableField}>{note.updatedAt}</td>
-                                <td className={classes.LgTableField}>{note.description}</td>
                                 <td><Link onClick={() => this.restoreHandler(note._id)} to="#">restore</Link> | <span onClick={() => this.permanentDeleteHandler(note._id)} className={classes.DeleteLink}>delete</span></td>
                             </tr>
                         )
@@ -125,9 +131,9 @@ class NotesList extends Component {
                         <thead>
                             <tr>
                                 <th>Title</th>
+                                <th className={classes.LgTableField}>Description</th>
                                 <th className={classes.LgTableField}>Created Date</th>
                                 <th className={classes.LgTableField}>Updated Date</th>
-                                <th className={classes.LgTableField}>Description</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -143,19 +149,19 @@ class NotesList extends Component {
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Creator</th>
-                            <th className={classes.LgTableField}>Description</th>
+                            <th>Description</th>
                             <th className={classes.LgTableField}>Created Date</th>
+                            <th className={classes.LgTableField}>Updated Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         {this.state.sharedNotes.map(note => {
                             return (
-                                <tr>
+                                <tr onClick={() => this.sharedNoteClickedHandler(note._id)} key={note._id}>
                                     <td>{note.title}</td>
-                                    <td>{note.creator}</td>
-                                    <td className={classes.LgTableField}>{note.description}</td>
+                                    <td>{note.description}</td>
                                     <td className={classes.LgTableField}>{note.createdAt}</td>
+                                    <td className={classes.LgTableField}>{note.updatedAt}</td>
                                 </tr>
                             )
                         })}

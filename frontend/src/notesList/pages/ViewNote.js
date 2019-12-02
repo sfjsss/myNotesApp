@@ -61,7 +61,7 @@ class ViewNote extends Component {
         const shareData = {
             email: this.state.shareEmail.value
         }
-        axios.post('http://localhost:5000/api/notes/share/' + this.props.match.params.nid + '?auth=' + this.props.token, shareData)
+        axios.patch('http://localhost:5000/api/notes/share/' + this.props.match.params.nid + '?auth=' + this.props.token, shareData)
             .then(response => {
                 this.fetchNoteData();
             })
@@ -124,7 +124,7 @@ class ViewNote extends Component {
         const shareData = {
             userId: userId
         }
-        axios.post('http://localhost:5000/api/notes/unshare/' + this.props.match.params.nid + '?auth=' + this.props.token, shareData)
+        axios.patch('http://localhost:5000/api/notes/unshare/' + this.props.match.params.nid + '?auth=' + this.props.token, shareData)
             .then(response => {
                 this.fetchNoteData();
             })

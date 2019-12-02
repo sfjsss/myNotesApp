@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-router.post(
+router.patch(
     '/share/:nid',
     [
         check('email')
@@ -18,7 +18,7 @@ router.post(
     notesControllers.shareNote
 );
 
-router.post(
+router.patch(
     '/unshare/:nid',
     [
         check('userId')
